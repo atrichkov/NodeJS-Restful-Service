@@ -1,0 +1,48 @@
+{
+    "development": {
+        "mysql": {
+            "host": "localhost",
+            "user": "<username>",
+            "password": "<password>",
+            "database": "restfulService"
+        },
+        "redis": {
+            
+        },
+        "server": {
+            "host": "localhost",
+            "port": 8081
+        },
+        "perPage": 3,
+        "token_life": 600,
+        "cors": {
+           "whitelist": "['http://capital.atrichkov.economedia.bg', 'http://localhost', 'http://127.0.0.1']"
+        },
+        "imagesPath": "public/images/",
+        "thumPrefix": "thumb_",
+        "thumbsPath": "public/images/thumbs/"
+    },
+    "test": {
+        "mysql": {
+            "host": "localhost",
+            "user": "<username>",
+            "password": "<password>",
+            "database": "restfulService"
+        },
+        "redis": {
+            
+        },
+        "server": {
+            "host": "localhost",
+            "port": 8081
+        },
+        "perPage": 3,
+        "token_life": 600,
+        "cors": {
+           "whitelist": "*"
+        },
+        "imagesPath": "public/images/",
+        "thumPrefix": "thumb_",
+        "thumbsPath": "public/images/thumbs/"
+    }
+}
