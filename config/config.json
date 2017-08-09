@@ -16,7 +16,7 @@
         "perPage": 3,
         "token_life": 600,
         "cors": {
-           "whitelist": "['http://capital.atrichkov.economedia.bg', 'http://localhost', 'http://127.0.0.1']"
+           "whitelist": "['example.com', 'http://localhost', 'http://127.0.0.1']"
         },
         "imagesPath": "public/images/",
         "thumPrefix": "thumb_",
