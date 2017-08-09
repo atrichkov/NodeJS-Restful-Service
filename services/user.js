@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 
 module.exports = function (options) {
     this.register = function (res, username, password) {
-    	console.log(username);
-    	console.log(password);
         if (username && password) {
                 bcrypt.genSalt(10, function (err, salt) {
                 bcrypt.hash(password, salt, function (err, bcryptedPassword) {
