@@ -94,5 +94,3 @@ module.exports = function (options) {
     
     return this;
 }
-
-//console.log(user);
