@@ -1,15 +1,16 @@
 'use strict';
 
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import bodyParser from 'body-parser';
 const cors = require('cors');
-const bodyParser = require('body-parser');
+
 const app = express();
 const jwt = require('jsonwebtoken');
 const redis = require('redis');
 const mysql = require('mysql');
 
-var env = process.env.NODE_ENV || 'development';
-const config = require('./config/config.json')[env];
+const env = process.env.NODE_ENV || 'development';
+const config = require('../config/config.json')[env];
 
 // Create Redis Client
 let redisClient = redis.createClient();
@@ -20,7 +21,7 @@ redisClient.on('connect', function () {
 let mysqlClient = mysql.createConnection(config.mysql);
 mysqlClient.connect();
 
-var initializers = {
+const initializers = {
   config: config,
   mysqlClient: mysqlClient,
   redisClient: redisClient,
@@ -35,7 +36,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 
 const router = express.Router(); // get an instance of the express Router
 let corsOptions = {
-  origin: function (origin, callback) {
+  origin: function (origin: any, callback: any) {
     if (
       config.cors.whitelist.indexOf(origin) !== -1 ||
       typeof origin === 'undefined'
@@ -88,10 +89,10 @@ router.post('/add', verifyToken, function (req: Request, res: Response) {
   cats.add(req, res);
 });
 
-function verifyToken(req: Request, res: Response, next) {
+function verifyToken(req: Request, res: Response, next: NextFunction) {
   var token = req.body.token || req.headers['token'];
   if (typeof token !== 'undefined') {
-    redisClient.hgetall(token, function (err, storedToken) {
+    redisClient.hgetall(token, function (err: any, storedToken: any) {
       if (err) {
         res.status(403);
         res.json({
@@ -106,17 +107,21 @@ function verifyToken(req: Request, res: Response, next) {
           message: 'Invalid token',
         });
       } else {
-        jwt.verify(token, process.env.SECRET_KEY, function (err, data) {
-          if (err) {
-            res.status(403);
-            res.json({
-              statys: 403,
-              message: 'JWT expired',
-            });
-          } else {
-            next();
+        jwt.verify(
+          token,
+          process.env.SECRET_KEY,
+          function (err: any, data: any) {
+            if (err) {
+              res.status(403);
+              res.json({
+                statys: 403,
+                message: 'JWT expired',
+              });
+            } else {
+              next();
+            }
           }
-        });
+        );
       }
     });
   } else {
