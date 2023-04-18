@@ -1,10 +1,12 @@
 {
   "name": "restful-api",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "standart mocha"
+    "test": "standart mocha",
+    "start": "node dist/app.js",
+    "watch": "tsc -w",
+    "start:dev": "nodemon dist/app.js"
   },
   "keywords": [
     "util",
@@ -29,8 +31,11 @@
     "redis": "^4.6.5"
   },
   "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^16.18.23",
     "chai": "^4.1.0",
     "mocha": "^3.5.0",
+    "nodemon": "^2.0.22",
     "supertest": "^3.0.0",
     "typescript": "^5.0.4"
   },
