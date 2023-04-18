@@ -1,5 +1,5 @@
+import jwt from 'jsonwebtoken';
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 module.exports = function (options: any) {
   (this.register = function (res: any, username: string, password: string) {
