@@ -9,11 +9,16 @@ import mysql from 'mysql';
 
 const env = process.env.NODE_ENV || 'development';
 import { default as configModule } from '../config/config.json' assert { type: 'json' };
-const config: {} = configModule[env];
+interface IConfig {
+  mysql: {};
+  server: { port: number };
+  cors: { whitelist: string[] };
+}
+const config: IConfig = configModule[env];
 
 // Create Redis Client
 const redisClient = redis.createClient();
-redisClient.on('connect', function () {
+redisClient.on('connect', () => {
   console.log('Redis client connected');
 });
 
@@ -29,6 +34,7 @@ const initializers = {
 const app = express();
 
 import * as user from './services/user.js';
+import * as cats from './services/cats.js';
 // const user = require('./services/user.js')(initializers);
 // const cats = require('./services/cats.js')(initializers);
 app.set('port', process.env.PORT || config.server.port);
