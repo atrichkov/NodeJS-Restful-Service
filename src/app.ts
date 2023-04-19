@@ -5,8 +5,8 @@ import bodyParser from 'body-parser';
 const cors = require('cors');
 
 const app = express();
-const jwt = require('jsonwebtoken');
-const redis = require('redis');
+import jwt from 'jsonwebtoken';
+import redis from 'redis';
 const mysql = require('mysql');
 
 const env = process.env.NODE_ENV || 'development';
@@ -35,8 +35,16 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(bodyParser.json()); // support json encoded bodies
 
 const router = express.Router(); // get an instance of the express Router
-let corsOptions = {
-  origin: function (origin: any, callback: any) {
+
+interface ICorsOptions {
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void
+  ) => void;
+}
+
+let corsOptions: ICorsOptions = {
+  origin: function (origin, callback) {
     if (
       config.cors.whitelist.indexOf(origin) !== -1 ||
       typeof origin === 'undefined'
@@ -92,38 +100,41 @@ router.post('/add', verifyToken, function (req: Request, res: Response) {
 function verifyToken(req: Request, res: Response, next: NextFunction) {
   var token = req.body.token || req.headers['token'];
   if (typeof token !== 'undefined') {
-    redisClient.hgetall(token, function (err: any, storedToken: any) {
-      if (err) {
-        res.status(403);
-        res.json({
-          statys: 403,
-          message: err,
-        });
-      }
-      if (parseInt(storedToken.valid) === 0) {
-        res.status(403);
-        res.json({
-          statys: 403,
-          message: 'Invalid token',
-        });
-      } else {
-        jwt.verify(
-          token,
-          process.env.SECRET_KEY,
-          function (err: any, data: any) {
-            if (err) {
-              res.status(403);
-              res.json({
-                statys: 403,
-                message: 'JWT expired',
-              });
-            } else {
-              next();
+    redisClient.hgetall(
+      token,
+      function (err: Error | undefined, storedToken: any) {
+        if (err) {
+          res.status(403);
+          res.json({
+            statys: 403,
+            message: err,
+          });
+        }
+        if (parseInt(storedToken.valid) === 0) {
+          res.status(403);
+          res.json({
+            statys: 403,
+            message: 'Invalid token',
+          });
+        } else {
+          jwt.verify(
+            token,
+            process.env.SECRET_KEY!,
+            function (err: Error | null) {
+              if (err) {
+                res.status(403);
+                res.json({
+                  statys: 403,
+                  message: 'JWT expired',
+                });
+              } else {
+                next();
+              }
             }
-          }
-        );
+          );
+        }
       }
-    });
+    );
   } else {
     res.status(403);
     res.json({
