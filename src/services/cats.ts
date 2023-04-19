@@ -1,15 +1,17 @@
-const multer = require('multer');
+import multer from 'multer';
 const gm = require('gm').subClass({ imageMagick: true });
 
-module.exports = function (options: any) {
+export default function (options: any) {
   (this.feed = function (req: any, res: any) {
-    var where = 'WHERE true';
-    var placeholders = [];
-    for (let key in req.query) {
+    let where = 'WHERE true';
+    const placeholders = [];
+
+    for (const key in req.query) {
       let val = req.query[key];
       placeholders.push(val);
       where += ' AND ' + key + ' = ?';
     }
+
     let limit = req.params.limit || options.config.perPage;
     let offset = limit * ((req.params.page || 1) - 1);
     let queryString =
@@ -110,4 +112,4 @@ module.exports = function (options: any) {
     });
 
   return this;
-};
+}

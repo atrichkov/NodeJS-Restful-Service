@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
-module.exports = function (options: any) {
+export default function (options: any) {
   (this.register = function (res: any, username: string, password: string) {
     if (username && password) {
       bcrypt.genSalt(10, function (err: {}, salt: string) {
@@ -120,4 +120,4 @@ module.exports = function (options: any) {
     });
 
   return this;
-};
+}

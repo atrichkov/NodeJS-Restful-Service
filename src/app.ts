@@ -2,23 +2,22 @@
 
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
-const cors = require('cors');
-
-const app = express();
+import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import redis from 'redis';
-const mysql = require('mysql');
+import mysql from 'mysql';
 
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config.json')[env];
+import { default as configModule } from '../config/config.json' assert { type: 'json' };
+const config: {} = configModule[env];
 
 // Create Redis Client
-let redisClient = redis.createClient();
+const redisClient = redis.createClient();
 redisClient.on('connect', function () {
   console.log('Redis client connected');
 });
 
-let mysqlClient = mysql.createConnection(config.mysql);
+const mysqlClient = mysql.createConnection(config.mysql);
 mysqlClient.connect();
 
 const initializers = {
@@ -27,8 +26,11 @@ const initializers = {
   redisClient: redisClient,
 };
 
-const user = require('./services/user.js')(initializers);
-const cats = require('./services/cats.js')(initializers);
+const app = express();
+
+import * as user from './services/user.js';
+// const user = require('./services/user.js')(initializers);
+// const cats = require('./services/cats.js')(initializers);
 app.set('port', process.env.PORT || config.server.port);
 
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
