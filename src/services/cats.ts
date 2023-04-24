@@ -1,5 +1,6 @@
 import multer from 'multer';
-const gm = require('gm').subClass({ imageMagick: true });
+import gm from 'gm';
+// .subClass({ imageMagick: true });
 
 export default function (options: any) {
   (this.feed = function (req: any, res: any) {
@@ -12,9 +13,9 @@ export default function (options: any) {
       where += ' AND ' + key + ' = ?';
     }
 
-    let limit = req.params.limit || options.config.perPage;
-    let offset = limit * ((req.params.page || 1) - 1);
-    let queryString =
+    const limit: number = req.params.limit || options.config.perPage;
+    const offset = limit * ((req.params.page || 1) - 1);
+    const queryString =
       'SELECT id, name, specie, color, status, avatar, added FROM cats ' +
       where +
       ' LIMIT ' +
@@ -92,8 +93,9 @@ export default function (options: any) {
           throw err;
         }
 
-        let avatarName: string = options.config.thumPrefix + req.file.filename;
-        var avatar: string = options.config.thumbsPath + avatarName;
+        const avatarName: string =
+          options.config.thumPrefix + req.file.filename;
+        const avatar: string = options.config.thumbsPath + avatarName;
         gm('./' + req.file.path)
           .resize('250', '180', '^')
           .gravity('center')

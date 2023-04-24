@@ -73,7 +73,7 @@ export default function (options: any) {
             function (err: any, match: boolean) {
               if (match === true) {
                 if (user[0]) {
-                  let token = jwt.sign(user[0], process.env.SECRET_KEY, {
+                  let token = jwt.sign(user[0], process.env.SECRET_KEY!, {
                     expiresIn: '1h',
                   });
                   options.redisClient.HMSET(token, {
