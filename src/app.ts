@@ -88,7 +88,7 @@ router.post('/authenticate', function (req: Request, res: Response): void {
   user.authenticate(res, username, password);
 });
 
-router.get('/logout', function (req: Request, res: Response) {
+router.get('/logout', function (req: Request, res: Response): void {
   const token: string = req.body.token || req.headers['token'];
   user.logout(res, token);
 });
@@ -152,6 +152,6 @@ function verifyToken(req: Request, res: Response, next: NextFunction): void {
   }
 }
 
-app.listen(app.get('port'), function () {
+app.listen(app.get('port'), function (): void {
   console.log('Node app is running on port', app.get('port'));
 });

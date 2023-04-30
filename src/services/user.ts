@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 export default function (options: any) {
   (this.register = function (
@@ -18,7 +18,7 @@ export default function (options: any) {
               throw err;
             }
 
-            let data = { pass: bcryptedPassword, username: username };
+            const data = { pass: bcryptedPassword, username: username };
             options.mysqlClient.query(
               'INSERT INTO users SET ?',
               data,
@@ -62,7 +62,7 @@ export default function (options: any) {
       options.mysqlClient.query(
         queryString,
         [username],
-        function (err: any, user: any[]) {
+        function (err: undefined | any, user: any[]) {
           if (err) {
             res.status(400);
             res.json({
@@ -75,7 +75,7 @@ export default function (options: any) {
           bcrypt.compare(
             password,
             user[0].pass,
-            function (err: any, match: boolean): void {
+            function (err: undefined | any, match: boolean): void {
               if (match === true) {
                 if (user[0]) {
                   let token = jwt.sign(user[0], process.env.SECRET_KEY!, {
