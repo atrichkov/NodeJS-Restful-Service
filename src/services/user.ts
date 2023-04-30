@@ -1,14 +1,19 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
 
 export default function (options: any) {
-  (this.register = function (res: any, username: string, password: string) {
+  (this.register = function (
+    res: Response,
+    username: string,
+    password: string
+  ) {
     if (username && password) {
-      bcrypt.genSalt(10, function (err: {}, salt: string) {
+      bcrypt.genSalt(10, function (err: {}, salt: string): void {
         bcrypt.hash(
           password,
           salt,
-          function (err: {}, bcryptedPassword: string) {
+          function (err: {}, bcryptedPassword: string): void {
             if (err) {
               throw err;
             }
@@ -48,7 +53,7 @@ export default function (options: any) {
     }
   }),
     (this.authenticate = function (
-      res: any,
+      res: Response,
       username: string,
       password: string
     ) {
@@ -70,7 +75,7 @@ export default function (options: any) {
           bcrypt.compare(
             password,
             user[0].pass,
-            function (err: any, match: boolean) {
+            function (err: any, match: boolean): void {
               if (match === true) {
                 if (user[0]) {
                   let token = jwt.sign(user[0], process.env.SECRET_KEY!, {
@@ -106,7 +111,7 @@ export default function (options: any) {
         }
       );
     }),
-    (this.logout = function (res: any, token: string) {
+    (this.logout = function (res: Response, token: string) {
       options.redisClient.HMSET(token, {
         expire: 0,
         valid: 0,

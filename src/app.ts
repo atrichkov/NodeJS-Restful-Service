@@ -54,8 +54,8 @@ interface ICorsOptions {
 let corsOptions: ICorsOptions = {
   origin: function (origin, callback) {
     if (
-      config.cors.whitelist.indexOf(origin) !== -1 ||
-      typeof origin === 'undefined'
+      typeof origin === 'undefined' ||
+      config.cors.whitelist.indexOf(origin) !== -1
     ) {
       // undefined for localhost requests
       callback(null, true);
@@ -67,50 +67,50 @@ let corsOptions: ICorsOptions = {
 
 app.use(cors(corsOptions));
 app.use('/api', router);
-app.get('/', function (req: Request, res: Response) {
+app.get('/', function (req: Request, res: Response): void {
   res.json({
     message: 'Restful API',
   });
 });
 process.env.SECRET_KEY = 'decodekey';
 
-router.post('/register', function (req: Request, res: Response) {
-  let username = req.body.username;
-  let password = req.body.password;
-  console.log(123);
+router.post('/register', function (req: Request, res: Response): void {
+  const username: string = req.body.username;
+  const password: string = req.body.password;
 
   user.register(res, username, password);
 });
 
-router.post('/authenticate', function (req: Request, res: Response) {
-  let username = req.body.username;
-  let password = req.body.password;
+router.post('/authenticate', function (req: Request, res: Response): void {
+  const username: string = req.body.username;
+  const password: string = req.body.password;
+
   user.authenticate(res, username, password);
 });
 
 router.get('/logout', function (req: Request, res: Response) {
-  let token = req.body.token || req.headers['token'];
+  const token: string = req.body.token || req.headers['token'];
   user.logout(res, token);
 });
 
 router.get(
   ['/feed', '/feed/:page/:limit*?'],
   verifyToken,
-  function (req: Request, res: Response) {
+  function (req: Request, res: Response): void {
     cats.feed(req, res);
   }
 );
 
-router.post('/add', verifyToken, function (req: Request, res: Response) {
+router.post('/add', verifyToken, function (req: Request, res: Response): void {
   cats.add(req, res);
 });
 
-function verifyToken(req: Request, res: Response, next: NextFunction) {
+function verifyToken(req: Request, res: Response, next: NextFunction): void {
   var token = req.body.token || req.headers['token'];
   if (typeof token !== 'undefined') {
     redisClient.hgetall(
       token,
-      function (err: Error | undefined, storedToken: any) {
+      function (err: Error | undefined, storedToken: any): void {
         if (err) {
           res.status(403);
           res.json({
